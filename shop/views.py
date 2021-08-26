@@ -105,6 +105,7 @@ class ProductDetailView(DetailView):
         category = context['product'].category
         product = Product.objects.filter(category=category)
         context['related_products'] = format_data(product)
+        context['size'] = context['product'].productsize_set.select_related('size')
         for value in context['product'].image_set.all():
             url = value.url.split('.')
             id =  url[0]
