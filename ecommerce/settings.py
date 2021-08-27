@@ -13,7 +13,6 @@ from django.utils.translation import ugettext_lazy as _
 from pathlib import Path
 import dj_database_url
 import os
-import environ
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,9 +26,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'cg#p$g+j9tax!#a3cup@1$8obt2_+&k3q+pmu)5%asj6yjpkag')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
-
-ALLOWED_HOSTS = []
+DEBUG = os.environ.get('DJANGO_DEBUG', False)
+ALLOWED_HOSTS = ['https://vnc-shop.herokuapp.com','*','127.0.0.1']
 
 
 # Application definition
@@ -139,7 +137,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = os.path.join(BASE_DIR , 'staticfiles')
 
 STATIC_URL = '/static/'
 
