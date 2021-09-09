@@ -16,7 +16,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime, timedelta
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.forms.models import model_to_dict
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from .utils.constant import LENGTH_PAGE, STATUS_ORDER, FILTER, SALE
 from .utils.common import get_month_dict, get_sum_values, draw_order_barchart, draw_order_circlechart, draw_reviews_barchart
 from shop.models import Item, Order, Product,Category, ProductSize, Size, Comment, Sale, SaleProduct
@@ -178,8 +178,24 @@ class ProductDetailView(DetailView):
             context['images'].append({'url': 'img/'+ value.url, 'id_img': id})
         context['comment'] = context['product'].comment_set.order_by('-create_at')
         context['all_comment'] = context['product'].comment_set.count()
+        comment =  context['product'].comment_set.values('rate').annotate(dcount=Count('rate')).order_by('rate')
+        classify_comment = []
+        total = 0
         context['range'] = range(1, 6)
-
+        for i in context['range']:
+            data = dict((d['rate'], dict(d, index=index)) for (index, d) in enumerate(comment)).get(i)
+            if data and context['all_comment'] !=0 :
+                ratio = int(data['dcount'] / context['all_comment'] *100)
+                data['style'] = 'width: {}%'.format(ratio)
+                total = total + data['rate'] * data['dcount']
+                classify_comment.append(data)
+            else:
+                classify_comment.append({'rate': i, 'dcount': 0, 'index': i-1, 'style': 'width: 0%'})
+        if context['all_comment'] !=0 :
+            context['medium'] = round(total / context['all_comment'], 2)
+        else:
+            context['medium'] = 0
+        context['classify_comment'] = classify_comment
         return context
 
 
@@ -419,7 +435,25 @@ def addcomment(request, id):
             data_return = model_to_dict(data)
             data_return['user'] = data.user.username
             
-            return JsonResponse(data_return)
+            comment =  data.product.comment_set.values('rate').annotate(dcount=Count('rate')).order_by('rate')
+            total_comment = data.product.comment_set.count()
+            classify_comment = []
+            total = 0
+            list = range(1, 6)
+            for i in list:
+                value = dict((d['rate'], dict(d, index=index)) for (index, d) in enumerate(comment)).get(i)
+                if value and total_comment !=0 :
+                    ratio = int(value['dcount'] / total_comment *100)
+                    value['style'] = '{}%'.format(ratio)
+                    total = total + value['rate'] * value['dcount']
+                    classify_comment.append(value)
+                else:
+                    classify_comment.append({'rate': i, 'dcount': 0, 'index': i-1, 'style': 'width: 0%'})
+            if total_comment !=0 :
+                medium = round(total / total_comment,2)
+            else:
+                medium = 0
+            return JsonResponse({'data_cmt': data_return, 'medium': medium, 'classify_comment':classify_comment, 'total_comment':total_comment})
 
     return HttpResponseBadRequest({'error':"404"}, content_type='application/json')
 
