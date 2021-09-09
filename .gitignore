@@ -2,7 +2,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+# img
+shop/static/img/my_order_chart.png
+shop/static/img/my_order_circle.png
+shop/static/img/my_star_chart.png
 # C extensions
 *.so
 

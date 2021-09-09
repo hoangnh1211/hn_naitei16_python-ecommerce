@@ -493,3 +493,17 @@ button:hover {
 .sale{
     color: black !important;
 }
+.progress{
+    height: 10px !important;
+    margin-bottom: 10px !important;
+    top: 8px !important;
+}
+.medium{
+    padding: auto !important;
+    color: rgba(255, 230, 0, 0.884);
+}
+/* col */
+.col-1, .col-8, .col-3, .col-4, .col-7{
+    padding: 0px !important;
+    margin: 0px !important;
+}

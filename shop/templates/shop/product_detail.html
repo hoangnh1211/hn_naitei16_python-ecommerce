@@ -109,6 +109,25 @@
                         {% trans "Reviews" %} (<span id="comment_span">{{all_comment}}</span>)
                     </h5>
                 </div>
+                <div class="row">
+                    <div class="col-3" >
+                        <div class="medium">
+                            <h3><span id="starmedium">{{medium}}</span><i class="fa fa-star" aria-hidden="true"></i></h3>
+                            <p> <span id="totalcmt">{{all_comment}} </span>{% trans "Reviews" %} </p>
+                        </div>
+                    </div>
+                    <div class="col-9" >
+                        {% for value in classify_comment %}
+                            <div class="row" id="rate{{value.rate}}">
+                                <p class="col-1">{{value.rate}}<i class="fa fa-star" aria-hidden="true"></i></p>
+                                <div class="progress col-7">
+                                    <div class="progress-bar" role="progressbar" style="{{value.style}}" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <p class="col-4"> <span >{{value.dcount}} </span>{% trans "Reviews" %} </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
                 <div class="comment-wrapper">
                     {% for message in comment %}
                         <div class="single-review">
