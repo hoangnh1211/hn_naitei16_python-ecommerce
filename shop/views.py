@@ -17,6 +17,7 @@ from datetime import datetime, timedelta
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.forms.models import model_to_dict
 from django.db.models import Sum, Count
+from django.views.decorators.csrf import csrf_exempt
 from .utils.constant import LENGTH_PAGE, STATUS_ORDER, FILTER, SALE
 from .utils.common import get_month_dict, get_sum_values, draw_order_barchart, draw_order_circlechart, draw_reviews_barchart
 from shop.models import Item, Order, Product,Category, ProductSize, Size, Comment, Sale, SaleProduct
@@ -171,7 +172,8 @@ class ProductDetailView(DetailView):
             context['price_sale'] = price_sale
         product = Product.objects.filter(category=category)
         context['related_products'] = format_data(product)
-        context['size'] = context['product'].productsize_set.select_related('size')
+        context['size'] = context['product'].productsize_set.select_related('size', 'hint')
+        context['first_size'] = context['size'].first.related('hint')
         for value in context['product'].image_set.all():
             url = value.url.split('.')
             id =  url[0]
@@ -323,11 +325,15 @@ def wishlist(request):
 
 
 @login_required
+@csrf_exempt
 def add_to_wishlist(request, id):
-    product = get_object_or_404(Product, id=id)
-    product.users_wishlist.add(request.user)
-    
-    return HttpResponseRedirect(request.META["HTTP_REFERER"])
+    if request.method == 'POST':
+        product = get_object_or_404(Product, id=id)
+        product.users_wishlist.add(request.user)
+        
+        return JsonResponse({'status': 'success'})
+
+    return JsonResponse({'status': 'false'})
 
 
 @login_required

@@ -89,6 +89,11 @@ class ProductSize(models.Model):
     product = models.ForeignKey('Product', on_delete=models.SET_NULL, null=True)
     size = models.ForeignKey('Size', on_delete=models.SET_NULL, null=True)
     amount = models.IntegerField(default=0)
+    hint = models.ForeignKey('HintSelectProduct', on_delete=models.SET_NULL, null=True)
+    
+
+class HintSelectProduct(models.Model):
+    description = models.CharField(max_length=254)
 
 
 class Order(models.Model):
