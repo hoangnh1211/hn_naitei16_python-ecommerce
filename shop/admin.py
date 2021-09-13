@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CustomUser, Category, Product, Image, Size, ProductSize, Order, Item, Sale, SaleProduct, Comment
+from .models import CustomUser, Category, HintSelectProduct, Product, Image, Size, ProductSize, Order, Item, Sale, SaleProduct, Comment
 
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
@@ -21,6 +21,9 @@ class ProductAdmin(admin.ModelAdmin):
     inlines = [ImageInline]
 
 
+admin.site.register(HintSelectProduct)
+
+
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
     list_display = ('url', 'product')
@@ -31,7 +34,7 @@ admin.site.register(Size)
 
 @admin.register(ProductSize)
 class ProductSizeAdmin(admin.ModelAdmin):
-    list_display = ('product', 'size', 'amount')
+    list_display = ('product', 'size', 'amount','hint')
     
 
 @admin.register(Order)

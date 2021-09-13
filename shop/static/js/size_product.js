@@ -8,6 +8,8 @@ $(document).ready(function () {
             if (option.value === data){
                 let span = $("#quantity_left span")
                 span[0].innerHTML = option.getAttribute('size-amount')
+                let hint_select = $("#hint_select span")
+                hint_select[0].innerHTML = option.getAttribute('hint-select')
                 let number_size = $("#number_size")
                 number_size[0].max = option.getAttribute('size-amount')
             }
