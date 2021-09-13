@@ -171,7 +171,8 @@ class ProductDetailView(DetailView):
             context['price_sale'] = price_sale
         product = Product.objects.filter(category=category)
         context['related_products'] = format_data(product)
-        context['size'] = context['product'].productsize_set.select_related('size')
+        context['size'] = context['product'].productsize_set.select_related('size', 'hint')
+        context['first_size'] = context['size'].first.related('hint')
         for value in context['product'].image_set.all():
             url = value.url.split('.')
             id =  url[0]
